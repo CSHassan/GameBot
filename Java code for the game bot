@@ -395,7 +395,7 @@ public class Ankoukiller
   
   public void run()
   {
-    println("Caves Ankou killer for PH starting ");
+    println("Bot starting ");
     spectime = getRunningTime();
     println(Integer.valueOf(startxp));
     spectime = getRunningTime();
