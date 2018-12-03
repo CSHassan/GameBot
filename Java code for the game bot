@@ -1,0 +1,420 @@
+
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.io.IOException;
+import java.net.URL;
+import javax.imageio.ImageIO;
+import org.tribot.api.General;
+import org.tribot.api.Timing;
+import org.tribot.api.input.Mouse;
+import org.tribot.api2007.Camera;
+import org.tribot.api2007.GameTab;
+import org.tribot.api2007.GameTab.TABS;
+import org.tribot.api2007.GroundItems;
+import org.tribot.api2007.Interfaces;
+import org.tribot.api2007.Inventory;
+import org.tribot.api2007.NPCs;
+import org.tribot.api2007.PathFinding;
+import org.tribot.api2007.Player;
+import org.tribot.api2007.Players;
+import org.tribot.api2007.Skills;
+import org.tribot.api2007.types.RSGroundItem;
+import org.tribot.api2007.types.RSInterfaceChild;
+import org.tribot.api2007.types.RSItem;
+import org.tribot.api2007.types.RSNPC;
+import org.tribot.api2007.types.RSPlayer;
+import org.tribot.script.Script;
+import org.tribot.script.ScriptManifest;
+import org.tribot.script.interfaces.Painting;
+
+@ScriptManifest(authors={"Cave (Scripter) | Ajwadi (Painter)"}, category="Pure Hatred", name="AnkouKiller")
+public class Ankoukiller
+  extends Script implements Painting
+{
+  private final Image img1 = getImage("http://puu.sh/2Ywjc.png");
+  
+  final long startTime = System.currentTimeMillis();
+  private int foodid;
+  private int lobsterid;
+  private static final int bonesid = 526;
+  private int bonesid_count;
+  private static int startxp = Skills.getXP("Range") + Skills.getXP("Defence") + Skills.getXP("Attack") + Skills.getXP("Strength");
+  private static int starthp = Skills.getXP("Hitpoints");
+  private boolean specused;
+  private long spectime;
+  private int startweapon;
+  private boolean usespec;
+  private boolean bas;
+  private final Color color1 = new Color(255, 255, 255);
+  private final Font font1 = new Font("Arial", 1, 10);
+  String runTime = Timing.msToString(System.currentTimeMillis() - startTime);
+  String Timeran = Timing.msToString(getRunningTime());
+  
+  public Ankoukiller()
+  {
+    foodid = 6883;
+    lobsterid = 379;
+    bonesid_count = 0;
+    specused = false;
+    startweapon = -1;
+    usespec = false;
+    bas = true;
+  }
+  
+  private Image getImage(String url) {
+    try {
+      return ImageIO.read(new URL(url));
+    } catch (IOException localIOException) {}
+    return null;
+  }
+  
+  public void onPaint(Graphics g1)
+  {
+    int xpgained = Skills.getXP("Range") + Skills.getXP("Defence") + Skills.getXP("Attack") + Skills.getXP("Strength") - startxp;
+    int hpgained = Skills.getXP("Hitpoints") - starthp;
+    Graphics2D g = (Graphics2D)g1;
+    g.drawImage(img1, 3, 341, null);
+    g.fill3DRect(5, 458, 70, 18, true);
+    g.setFont(font1);
+    
+    g.drawString("0.4", 100, 405);
+    
+    g.setColor(color1);
+    
+    String Timeran = Timing.msToString(getRunningTime());
+    g.drawString("Running for: " + Timeran, 10, 420);
+    g.drawString("XP Gained: " + Integer.toString(xpgained), 10, 430);
+    g.drawString("HP Gained: " + Integer.toString(hpgained), 10, 450);
+    g.drawString(perHour(xpgained, getRunningTime()), 10, 440);
+  }
+  
+  public static String perHour(int xpgained, long Timeran)
+  {
+    int i = (int)(xpgained * 3600000.0D / Timeran);
+    return "XP/Hr: " + i;
+  }
+  
+  public boolean lootbones()
+  {
+    RSGroundItem[] bones = GroundItems.findNearest(new int[] { 526 });
+    
+    if ((Inventory.getAll().length < 28) && (bones.length > 0) && (bones[0] != null))
+    {
+      if (PathFinding.canReach(GroundItems.findNearest(new int[] { 526 })[
+        0].getPosition(), true))
+      {
+        sleep(300, 800);
+        bones[0].click(new String[] { "Take Bones" });
+      }
+      sleep(2000, 2500);
+    }
+    return true;
+  }
+  
+  public boolean useb2p()
+  {
+    if (Inventory.getCount(new int[] { 526 }) > 17)
+    {
+      RSItem[] invtab = Inventory.find(new int[] { 8015 });
+      
+      invtab[0].click(new String[0]);
+    }
+    return true;
+  }
+  
+  public boolean lootitems()
+  {
+    RSGroundItem[] loots = GroundItems.findNearest(new int[] { 5259, 7937, 560, 448, 890, 563, 556, 565 });
+    
+    if ((loots.length > 0) && (loots[0] != null))
+    {
+      if (PathFinding.canReach(GroundItems.findNearest(new int[] { 5259, 7937, 560, 448, 890, 563, 556, 565 })[0].getPosition(), true))
+      {
+        sleep(50, 150);
+        loots[0].click(new String[] { "Take " });
+      }
+    }
+    else {
+      return true;
+    }
+    sleep(2000, 2500);
+    
+    return true;
+  }
+  
+  public boolean lootBass()
+  {
+    RSGroundItem[] Bass = GroundItems.findNearest(new int[] { 365 });
+    
+    if ((Bass.length > 0) && (Bass[0] != null))
+    {
+      if (PathFinding.canReach(GroundItems.findNearest(new int[] { 365 })[0].getPosition(), true))
+      {
+        RSItem[] bonedrop = Inventory.find(new int[] { 526 });
+        if (bonedrop.length > 0) {
+          bonedrop[0].click(new String[] { "Drop Bones" });
+          Bass[0].click(new String[] { "Take Bass" });
+        }
+      }
+    }
+    
+    sleep(100L);
+    
+    return true;
+  }
+  
+  public boolean combat() {
+    if (Player.getRSPlayer().getInteractingCharacter() == null)
+    {
+      try
+      {
+        Mouse.setSpeed(General.random(160, 190));
+        nearestNPC(new int[] {
+          4382, 4383, 4381 })
+          .click(new String[] {
+          "Attack" });
+        
+        sleep(500, 1500);
+      }
+      catch (Exception localException) {}
+      if (Player.getRSPlayer().getInteractingCharacter() != null)
+      {
+        lootbones();
+        lootitems();
+        lootBass();
+      }
+    }
+    Mouse.setSpeed(General.random(140, 190));
+    return true;
+  }
+  
+  private boolean eatfood()
+  {
+    if (Skills.getCurrentLevel("Hitpoints") < Skills.getActualLevel("Hitpoints") * 0.6D)
+    {
+      GameTab.open(GameTab.TABS.INVENTORY);
+      try
+      {
+        try
+        {
+          RSItem[] inva = Inventory.find(new int[] { lobsterid });
+          
+          RSItem food = inva[0];
+          food.click(new String[0]);
+          sleep(500L);
+        }
+        catch (Exception e)
+        {
+          RSItem[] inva = Inventory.find(new int[] { foodid, 365 });
+          
+          RSItem food = inva[0];
+          food.click(new String[0]);
+          sleep(500L);
+        }
+        
+
+
+
+
+
+
+
+
+        return true;
+      }
+      catch (Exception e)
+      {
+        println("Low hp/no tabs left , tellying out");
+      }
+    }
+  }
+  
+
+
+
+  private RSNPC nearestNPC(int[] js)
+  {
+    if (NPCs.findNearest(js).length != 0)
+    {
+      for (int i = 0; i < NPCs.findNearest(js).length; i++) {
+        if (((!NPCs.findNearest(js)[i].isInCombat()) && (NPCs.findNearest(js)[i].isOnScreen()) && (PathFinding.canReach(NPCs.findNearest(js)[i].getPosition(), true)) && (NPCs.findNearest(js)[i].getAnimation() == -1)) || (NPCs.findNearest(js)[i].isInteractingWithMe()))
+          return NPCs.findNearest(js)[i];
+      }
+    }
+    return null;
+  }
+  
+  private int getEquipment()
+  {
+    RSInterfaceChild equip = Interfaces.get(387, 28);
+    for (int i = 0; i < equip.getItems().length; i++)
+    {
+      equip.getItems()[i].getID();
+      if ((equip.getItems()[i].getID() == 863) || (equip.getItems()[i].getID() == 861) || (equip.getItems()[i].getID() == 859) || (equip.getItems()[i].getID() == 5698) || (equip.getItems()[i].getID() == 4587) || (equip.getItems()[i].getID() == 4887) || (equip.getItems()[i].getID() == 4889) || (equip.getItems()[i].getID() == 4888) || (equip.getItems()[i].getID() == 4151) || (equip.getItems()[i].getID() == 4886)) {
+        startweapon = equip.getItems()[i].getID();
+      }
+    }
+    return startweapon;
+  }
+  
+  public boolean spec()
+  {
+    long specc = getRunningTime() - spectime;
+    if (specc > General.random(150000, 200000))
+    {
+      Mouse.setSpeed(General.random(100, 150));
+      GameTab.open(GameTab.TABS.INVENTORY);
+      RSItem[] dbaxesearch = Inventory.find(new int[] { 1377, 35, 1231 });
+      RSItem dbaxe = dbaxesearch[0];
+      dbaxe.click(new String[0]);
+      GameTab.open(GameTab.TABS.COMBAT);
+      GameTab.open(GameTab.TABS.COMBAT);
+      Mouse.clickBox(575, 415, 710, 428, 0);
+      GameTab.open(GameTab.TABS.INVENTORY);
+      RSItem[] Mainwep = Inventory.find(new int[] {
+        startweapon });
+      
+      RSItem Mainweps = Mainwep[0];
+      Mainweps.click(new String[0]);
+      sleep(1000, 1500);
+      spectime = getRunningTime();
+      antiBan();
+    }
+    
+    return true;
+  }
+  
+  private void antiBan() {
+    long wait = getRunningTime() - spectime;
+    if (wait > General.random(30000, 500000)) {}
+    int actionID = General.random(1, 7);
+    
+    switch (actionID) {
+    case 1: 
+      rotateCamera();
+      break;
+    case 2: 
+      rotateAngle();
+      break;
+    case 3: 
+      rotateCamera();
+      rotateAngle();
+      break;
+    case 4: 
+      checkXP();
+      break;
+    case 5: 
+      goAFK();
+      break;
+    case 6: 
+      openRandomTab();
+      break;
+    case 7: 
+      hoverRandomPlayer();
+    }
+  }
+  
+  private void rotateCamera()
+  {
+    int direction = General.random(1, 2);
+    int myRotation = Camera.getCameraRotation();
+    
+    if (direction == 1) {
+      Camera.setCameraRotation(myRotation - General.random(1, 360));
+    } else {
+      Camera.setCameraRotation(myRotation + General.random(1, 360));
+    }
+  }
+  
+  private void rotateAngle() {
+    int direction = 0;
+    int myAngle = Camera.getCameraAngle();
+    
+    direction = General.random(1, 2);
+    
+    if (myAngle == 100) {
+      Camera.setCameraAngle(myAngle - General.random(1, 50));
+    } else if (myAngle == 0) {
+      Camera.setCameraAngle(myAngle + General.random(1, 50));
+    }
+    else if (direction == 1) {
+      Camera.setCameraAngle(myAngle - General.random(1, 100 - myAngle - 1));
+    } else if (direction == 2) {
+      Camera.setCameraAngle(myAngle + General.random(1, 100 - myAngle - 1));
+    }
+  }
+  
+  private void checkXP() {
+    int x = General.random(560, 730);
+    int y = General.random(205, 445);
+    
+    if (GameTab.getOpen() != GameTab.TABS.STATS) {
+      GameTab.open(GameTab.TABS.STATS);
+      sleep(250, 500);
+    }
+    
+    Mouse.move(x, y);
+    sleep(1500, 2500);
+  }
+  
+  private void openRandomTab() {
+    GameTab.TABS[] tabs = { GameTab.TABS.COMBAT, GameTab.TABS.EQUIPMENT, GameTab.TABS.FRIENDS, GameTab.TABS.INVENTORY, GameTab.TABS.MAGIC, 
+      GameTab.TABS.PRAYERS, GameTab.TABS.STATS };
+    
+    int tabNum = General.random(0, 6);
+    
+    if (GameTab.getOpen() != tabs[tabNum]) {
+      GameTab.open(tabs[tabNum]);
+    } else {
+      openRandomTab();
+    }
+  }
+  
+  private void hoverRandomPlayer() {
+    RSPlayer[] guys = Players.getAll();
+    int playerNum = General.random(0, guys.length - 1);
+    
+    if ((guys != null) && (guys[playerNum].isOnScreen())) {
+      guys[playerNum].hover();
+    } else {
+      guys[0].hover();
+    }
+  }
+  
+  private void goAFK() {
+    int x = General.random(100, 700);
+    int y = General.random(100, 700);
+    
+    Mouse.move(x, y);
+    sleep(General.random(1500, 5000));
+  }
+  
+  public void run()
+  {
+    println("Caves Ankou killer for PH starting ");
+    spectime = getRunningTime();
+    println(Integer.valueOf(startxp));
+    spectime = getRunningTime();
+    getEquipment();
+    for (;;)
+    {
+      useb2p();
+      eatfood();
+      lootbones();
+      lootitems();
+      combat();
+      try
+      {
+        spec();
+      }
+      catch (Exception localException) {}
+      sleep(100L);
+    }
+  }
+}
+
+
