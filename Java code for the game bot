@@ -31,7 +31,7 @@ import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
 
-@ScriptManifest(authors={"Cave (Scripter) | Ajwadi (Painter)"}, category="Pure Hatred", name="AnkouKiller")
+
 public class Ankoukiller
   extends Script implements Painting
 {
