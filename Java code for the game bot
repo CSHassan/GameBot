@@ -31,6 +31,7 @@ import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
 
+/* Script is used to find an NPC called Ankou and keep killing it for reward and experince*/
 
 public class Ankoukiller
   extends Script implements Painting
