@@ -8,3 +8,5 @@ Original developed in around 2011-2012 , it was maintained for a couple of years
 
 3) Pick up any loot (things that monster in the game drop which included common item to rare items) and store in the inventory
 
+4) act like human movements so it doesn’t get detected by the games anti-bot function.
+
